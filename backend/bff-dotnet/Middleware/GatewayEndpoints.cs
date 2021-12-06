@@ -45,7 +45,6 @@ public static class GatewayEndpoints
     {
         app.MapGet("/login", (string? redirectUrl, HttpContext ctx) =>
         {
-
             if (string.IsNullOrEmpty(redirectUrl))
             {
                 redirectUrl = "/";

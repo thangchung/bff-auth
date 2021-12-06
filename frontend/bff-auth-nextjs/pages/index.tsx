@@ -1,9 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
-import React, { useState } from "react";
-import axios, { extractCookie } from "lib/axios";
+import axios from "lib/axios";
+
+const remoteBffUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+const url = process.env.NEXT_PUBLIC_URL;
 
 const Home: NextPage = () => {
   return (
@@ -15,22 +16,18 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <a href="https://localhost:5002/login?redirectUrl=http://localhost:3000">
-          Login
-        </a>&nbsp;
+        <a href={`${remoteBffUrl}/login?redirectUrl=${url}`}>Login</a>
         <button
           onClick={async () => {
             try {
-              let { data } = await axios.get(
-                `http://localhost:3000/api/hello`,
-                {
-                  withCredentials: true,
-                }
-              );
+              let { data } = await axios.get(`${url}/api/hello`, {
+                withCredentials: true,
+              });
 
               console.log(data);
-            } catch (error) {
-              window.location.href = "https://localhost:5002/login?redirectUrl=http://localhost:3000";
+            } catch (error: any) {
+              //console.log(error);
+              window.location.href = `${remoteBffUrl}/login?redirectUrl=${url}`;
             }
           }}
         >

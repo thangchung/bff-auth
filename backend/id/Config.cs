@@ -33,7 +33,7 @@ namespace IdentityServer
 
                     AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
 
-                    RedirectUris = { "https://localhost:5002/signin-oidc", "http://localhost:3000" },
+                    RedirectUris = { "https://localhost:5002/signin-oidc" },
 
                     BackChannelLogoutUri = "https://localhost:5002/logout",
 

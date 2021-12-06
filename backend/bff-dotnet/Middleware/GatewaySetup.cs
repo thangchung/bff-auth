@@ -9,6 +9,9 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Gateway.Middleware;
 
+/// <summary>
+/// https://github.com/DuendeSoftware/BFF/blob/36891c9129/src/Duende.Bff/Endpoints/BffAuthorizationMiddlewareResultHandler.cs
+/// </summary>
 public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
 {
     private readonly AuthorizationMiddlewareResultHandler _handler;

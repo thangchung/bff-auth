@@ -44,7 +44,6 @@ public static class GatewayPipeline
         ctx.Session.SetString(SessionKeys.IdToken, resp.id_token);
         ctx.Session.SetString(SessionKeys.RefreshToken, resp.refresh_token);
         ctx.Session.SetString(SessionKeys.ExpiresAt, "" + expiresAt.ToUnixTimeSeconds());
-
     }
 
     public static void UseGatewayPipeline(this IReverseProxyApplicationBuilder pipeline)

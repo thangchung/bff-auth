@@ -3,7 +3,8 @@ import axios, { extractCookie } from 'lib/axios'
 import { AxiosError } from 'axios'
 
 type Data = {
-    isLogin: boolean
+    isLogin: boolean,
+    name: string,
 }
 
 type Error = {
@@ -22,7 +23,17 @@ export default async function handler(
             }
         })
 
-        res.status(200).json({ isLogin: Object.keys(user.data).length !== 0 })
+        if (Object.keys(user.data).length !== 0) {
+            res.status(200).json({
+                isLogin: true,
+                name: user.data.name
+            })
+        } else {
+            res.status(200).json({
+                isLogin: false,
+                name: ''
+            })
+        }
     } catch (error: any) {
         const err = error as AxiosError
         if (err.response) {

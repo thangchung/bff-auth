@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "bff-dotnet/Gateway.csproj", "{127F57A1-2D05-42A2-A229-71B4D0FA2602}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gateway", "bff-dotnet\Gateway.csproj", "{127F57A1-2D05-42A2-A229-71B4D0FA2602}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "id\IdentityServer.csproj", "{8AF6BEDE-F395-4A7C-9F6C-6E4D4B326526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityServer", "identity-server\IdentityServer.csproj", "{8AF6BEDE-F395-4A7C-9F6C-6E4D4B326526}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

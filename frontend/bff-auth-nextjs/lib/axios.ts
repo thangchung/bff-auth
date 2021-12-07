@@ -12,7 +12,7 @@ const axios = Axios.create({
     })
 })
 
-export function extractCookie(cookies: any) {
+export function normalizeCookie(cookies: any) {
     return Object.keys(cookies).map(function(k){return `${k}=${cookies[k]}` }).join(",")
 }
 

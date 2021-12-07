@@ -16,5 +16,26 @@
 
 - Go to `http://localhost:3000`, and start to play around
 
+# High level architecture
+
+![](assets/overview.png)
+
+# Technical stacks
+
+## BFF Authentication
+- .NET 6
+
+## Identity Server
+- Duende.IdentityServer (.NET 6)
+
+## Front-end
+- Nextjs
+
+## Product Api
+- Rust (Axum): TODO
+
+## Sale Api
+- Golang (fiber)
+
 # References
 - https://github.com/manfredsteyer/yarp-auth-proxy

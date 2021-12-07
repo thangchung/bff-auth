@@ -1,4 +1,4 @@
-module github.com/thangchung/bff-auth/backend/product-api
+module github.com/thangchung/bff-auth/backend/sale-api
 
 go 1.17
 

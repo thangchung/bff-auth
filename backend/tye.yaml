@@ -1,24 +1,22 @@
-# tye application configuration file
-# read all about it at https://github.com/dotnet/tye
-#
-# when you've given us a try, we'd love to know what you think:
-#    https://aka.ms/AA7q20u
-#
-name: gateway
+name: bff-auth
+
 services:
+
+- name: identityserver
+  project: identity-server/IdentityServer.csproj
+  bindings:
+  - port: 5001
+    protocol: https
+
 - name: gateway
   project: bff-dotnet/Gateway.csproj
   bindings:
   - port: 5002
     protocol: https
-- name: identityserver
-  project: id/IdentityServer.csproj
+
+- name: sale-api
+  dockerFile: sale-api/Dockerfile
   bindings:
-  - port: 5001
-    protocol: https
-- name: product-api
-  dockerFile: product-api/Dockerfile
-  bindings:
-  - port: 5003
-    containerPort: 5003
+  - port: 5004
+    containerPort: 5004
     protocol: http

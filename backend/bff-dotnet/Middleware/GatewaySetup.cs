@@ -1,44 +1,10 @@
-using System.Net;
 using Gateway.Config;
 using Gateway.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Policy;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace Gateway.Middleware;
-
-/// <summary>
-/// https://github.com/DuendeSoftware/BFF/blob/36891c9129/src/Duende.Bff/Endpoints/BffAuthorizationMiddlewareResultHandler.cs
-/// </summary>
-public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewareResultHandler
-{
-    private readonly AuthorizationMiddlewareResultHandler _handler;
-
-    public CustomAuthorizationMiddlewareResultHandler()
-    {
-        _handler = new AuthorizationMiddlewareResultHandler();
-    }
-    
-    public Task HandleAsync(RequestDelegate next, HttpContext context, AuthorizationPolicy policy,
-        PolicyAuthorizationResult authorizeResult)
-    {
-        if (authorizeResult.Challenged)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
-            return Task.CompletedTask;
-        }
-
-        if (authorizeResult.Forbidden)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return Task.CompletedTask;
-        }
-        
-        return _handler.HandleAsync(next, context, policy, authorizeResult);
-    }
-}
 
 public static class GatewaySetup
 {
@@ -54,7 +20,7 @@ public static class GatewaySetup
         var sessionTimeoutInMin = config.SessionTimeoutInMin;
         builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMin); });
 
-        //builder.Services.AddAntiforgery(setup => { setup.HeaderName = "X-XSRF-TOKEN"; });
+        builder.Services.AddAntiforgery(setup => { setup.HeaderName = "X-XSRF-TOKEN"; });
 
         builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         builder.Services.AddSingleton<DiscoveryService>();
@@ -84,8 +50,8 @@ public static class GatewaySetup
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.SaveTokens = false;
                 options.GetClaimsFromUserInfoEndpoint = true;
-                //options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
-                //options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.RequireHttpsMetadata = false;
 
                 var scopes = config.Scopes;
@@ -106,14 +72,6 @@ public static class GatewaySetup
                     LogoutHandler.HandleLogout(context, config);
                     return Task.CompletedTask;
                 };
-                
-                /*options.BackchannelHttpHandler = new HttpClientHandler()
-                {
-                    ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
-                    {
-                        return true;
-                    }
-                };*/
             });
     }
 
@@ -129,7 +87,7 @@ public static class GatewaySetup
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseCookiePolicy();
-        //app.UseXsrfCookie();
+        app.UseXsrfCookie();
         app.UseGatewayEndpoints();
         app.UseYarp();
     }

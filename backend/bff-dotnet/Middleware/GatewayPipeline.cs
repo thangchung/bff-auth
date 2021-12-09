@@ -38,17 +38,18 @@ public static class GatewayPipeline
             return;
         }
 
-        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(resp.expires));
+        var expiresAt = new DateTimeOffset(DateTime.Now).AddSeconds(Convert.ToInt32(resp.Expires));
 
-        ctx.Session.SetString(SessionKeys.AccessToken, resp.access_token);
-        ctx.Session.SetString(SessionKeys.IdToken, resp.id_token);
-        ctx.Session.SetString(SessionKeys.RefreshToken, resp.refresh_token);
+        ctx.Session.SetString(SessionKeys.AccessToken, resp.AccessToken);
+        ctx.Session.SetString(SessionKeys.IdToken, resp.IdToken);
+        ctx.Session.SetString(SessionKeys.RefreshToken, resp.RefreshToken);
         ctx.Session.SetString(SessionKeys.ExpiresAt, "" + expiresAt.ToUnixTimeSeconds());
     }
 
     public static void UseGatewayPipeline(this IReverseProxyApplicationBuilder pipeline)
     {
         var tokenRefreshService = pipeline.ApplicationServices.GetRequiredService<TokenRefreshService>();
+        var tokenExchangeService = pipeline.ApplicationServices.GetRequiredService<TokenExchangeService>();
         var config = pipeline.ApplicationServices.GetRequiredService<GatewayConfig>();
 
         var apiPath = config.ApiPath;
@@ -63,9 +64,29 @@ public static class GatewayPipeline
             var token = ctx.Session.GetString(SessionKeys.AccessToken);
             var currentUrl = ctx.Request.Path.ToString().ToLower();
 
-            if (!string.IsNullOrEmpty(token) && currentUrl.StartsWith(apiPath))
+            if (!string.IsNullOrEmpty(token))
             {
-                ctx.Request.Headers.Add("Authorization", "Bearer " + token);
+                var currentDownStreamConfig = config.DownStreamServices.FirstOrDefault(x => currentUrl.Contains(x.ApiPath));
+
+                if (currentDownStreamConfig is {})
+                {
+                    // RFC-8693 for token exchange
+                    var result = await tokenExchangeService.ExchangeAsync(
+                        currentDownStreamConfig?.ClientId,
+                        currentDownStreamConfig?.ClientSecret,
+                        currentDownStreamConfig?.Scope,
+                        token);
+
+                    if (!string.IsNullOrEmpty(result?.AccessToken))
+                    {
+                        token = result.AccessToken;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(token) && currentUrl.StartsWith(apiPath))
+                {
+                    ctx.Request.Headers.Add("Authorization", "Bearer " + token);
+                }
             }
 
             await next().ConfigureAwait(false);

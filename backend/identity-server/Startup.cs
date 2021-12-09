@@ -9,6 +9,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rsk.TokenExchange;
+using Rsk.TokenExchange.DuendeIdentityServer;
+using Rsk.TokenExchange.Validators;
+using Rsk.TokenExchange.Validators.Adaptors;
 
 namespace IdentityServer
 {
@@ -27,22 +31,35 @@ namespace IdentityServer
         {
             services.AddControllersWithViews();
 
-            var builder = services.AddIdentityServer(options =>
-            {
-                options.Events.RaiseErrorEvents = true;
-                options.Events.RaiseInformationEvents = true;
-                options.Events.RaiseFailureEvents = true;
-                options.Events.RaiseSuccessEvents = true;
+            // RFC-8693
+            services.AddTransient<ITokenExchangeRequestParser, TokenExchangeRequestParser>();
+            services.AddTransient<ITokenExchangeRequestValidator, CustomTokenExchangeRequestValidator>();
+            services.AddTransient<ISubjectTokenValidator, DefaultSubjectTokenValidator>();
+            services.AddTransient<ITokenExchangeClaimsParser, TokenExchangeClaimsParser>();
+            
+            // RFC-8693
+            services.AddTransient<ITokenValidatorAdaptor, IdentityServerSubjectTokenValidator>();
+            
+            var builder = services
+                .AddIdentityServer(options =>
+                {
+                    options.Events.RaiseErrorEvents = true;
+                    options.Events.RaiseInformationEvents = true;
+                    options.Events.RaiseFailureEvents = true;
+                    options.Events.RaiseSuccessEvents = true;
 
-                // see https://docs.duendesoftware.com/identityserver/v5/fundamentals/resources/
-                options.EmitStaticAudienceClaim = true;
-            })
+                    // see https://docs.duendesoftware.com/identityserver/v5/fundamentals/resources/
+                    options.EmitStaticAudienceClaim = true;
+                })
                 .AddTestUsers(TestUsers.Users);
 
             // in-memory, code config
             builder.AddInMemoryIdentityResources(Config.IdentityResources);
             builder.AddInMemoryApiScopes(Config.ApiScopes);
             builder.AddInMemoryClients(Config.Clients);
+            
+            // RFC-8693
+            builder.AddExtensionGrantValidator<TokenExchangeExtensionGrantValidator>();
 
             services.AddAuthentication()
                 .AddGoogle(options =>

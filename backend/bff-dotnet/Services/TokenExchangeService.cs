@@ -3,36 +3,33 @@ using Gateway.Config;
 
 namespace Gateway.Services;
 
-public class RefreshResponse
+public class TokenExchangeResponse
 {
     [JsonPropertyName("access_token")] public string AccessToken { get; set; } = "";
-
-    [JsonPropertyName("id_token")] public string IdToken { get; set; } = "";
-
-    [JsonPropertyName("refresh_token")] public string RefreshToken { get; set; } = "";
-    
-    [JsonPropertyName("expires")] public long Expires { get; set; }
 }
 
-public class TokenRefreshService
+public class TokenExchangeService
 {
     private readonly DiscoveryDocument _disco;
     private readonly GatewayConfig _config;
 
-    public TokenRefreshService(GatewayConfig config, DiscoveryDocument disco)
+    public TokenExchangeService(GatewayConfig config, DiscoveryDocument disco)
     {
         _disco = disco;
         _config = config;
     }
 
-    public async Task<RefreshResponse?> RefreshAsync(string refreshToken)
+    public async Task<TokenExchangeResponse?> ExchangeAsync(string? clientId, string? clientSecret, string? scope,
+        string? accessToken)
     {
-        var payload = new Dictionary<string, string>
+        var payload = new Dictionary<string, string?>
         {
-            {"grant_type", "refresh_token"},
-            {"refresh_token", refreshToken},
-            {"client_id", _config.ClientId},
-            {"client_secret", _config.ClientSecret}
+            {"grant_type", "urn:ietf:params:oauth:grant-type:token-exchange"},
+            {"scope", scope},
+            {"client_id", clientId},
+            {"client_secret", clientSecret},
+            {"subject_token", accessToken},
+            {"subject_token_type", "urn:ietf:params:oauth:token-type:access_token"}
         };
 
         var httpClient = new HttpClient();
@@ -51,7 +48,7 @@ public class TokenRefreshService
             return null;
         }
 
-        var result = await response.Content.ReadFromJsonAsync<RefreshResponse>();
+        var result = await response.Content.ReadFromJsonAsync<TokenExchangeResponse>();
 
         return result;
     }

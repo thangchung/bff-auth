@@ -2,8 +2,13 @@
 // See LICENSE in the project root for license information.
 
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Duende.IdentityServer.Models;
+using Rsk.TokenExchange;
+using Rsk.TokenExchange.Validators;
 
 namespace IdentityServer
 {
@@ -19,7 +24,9 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                new ApiScope("api"),
+                //new ApiScope("api"),
+                new ApiScope("gw-api"),
+                new ApiScope("sale-api"),
             };
 
         public static IEnumerable<Client> Clients =>
@@ -40,8 +47,51 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "api" }
+                    AllowedScopes = { "openid", "profile", "gw-api" }
                 },
+                new Client
+                {
+                    ClientId = "gw-api",
+                    ClientSecrets = new[] {new Secret("secret".Sha256())},
+                    AllowedGrantTypes = new[] {"urn:ietf:params:oauth:grant-type:token-exchange"},
+                    AllowedScopes = new[] {"sale-api"}
+                }
             };
+    }
+    
+    public class CustomTokenExchangeRequestValidator : ITokenExchangeRequestValidator
+    {
+        private readonly ISubjectTokenValidator _subjectTokenValidator;
+
+        public CustomTokenExchangeRequestValidator(ISubjectTokenValidator subjectTokenValidator)
+        {
+            _subjectTokenValidator = subjectTokenValidator ?? throw new ArgumentNullException(nameof(subjectTokenValidator));
+        }
+
+        public async Task<ITokenExchangeValidationResult> Validate(ITokenExchangeRequest request)
+        {
+            if (request == null) throw new ArgumentNullException(nameof(request));
+
+            // validate subject token is issued by IdentityServer
+            var result = await _subjectTokenValidator.Validate(request.SubjectToken, request.SubjectTokenType);
+
+            // validate that the requester is an intended audience of the subject token
+            var audiences = result.Claims.Where(x => x.Type == "aud").ToList();
+            var clientId = result.Claims.FirstOrDefault(x => x.Type == "client_id");
+
+            /*if (audiences.All(x => x.Value != request.ClientId) && clientId?.Value != request.ClientId)
+            {
+                return TokenExchangeValidationResult.Failure("Requester must be a recipient of the subject token");
+            }*/
+            
+            /*if(clientId?.Value != request.ClientId)
+            {
+                return TokenExchangeValidationResult.Failure("Requester must be a recipient of the subject token");
+            }*/
+
+            return result.IsValid 
+                ? TokenExchangeValidationResult.Success(result.Claims)
+                : TokenExchangeValidationResult.Failure("Invalid subject token");
+        }
     }
 }

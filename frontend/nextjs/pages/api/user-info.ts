@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import axios, { extractCookie } from 'lib/axios'
+import axios, { normalizeCookie } from 'lib/axios'
 import { AxiosError } from 'axios'
 
 type Data = {
@@ -19,7 +19,7 @@ export default async function handler(
     try {
         let user = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/userinfo`, {
             headers: {
-                cookie: extractCookie(req.cookies)
+                cookie: normalizeCookie(req.cookies)
             }
         })
 

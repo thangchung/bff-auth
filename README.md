@@ -39,3 +39,4 @@
 
 # References
 - https://github.com/manfredsteyer/yarp-auth-proxy
+- https://developer.okta.com/blog/2021/01/04/offline-jwt-validation-with-go

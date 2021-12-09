@@ -2,11 +2,11 @@ name: bff-auth
 
 services:
 
-- name: identityserver
-  project: identity-server/IdentityServer.csproj
-  bindings:
-  - port: 5001
-    protocol: https
+# - name: identityserver
+#   project: identity-server/IdentityServer.csproj
+#   bindings:
+#   - port: 5001
+#     protocol: https
 
 - name: gateway
   project: bff-dotnet/Gateway.csproj
@@ -14,9 +14,9 @@ services:
   - port: 5002
     protocol: https
 
-- name: sale-api
-  dockerFile: sale-api/Dockerfile
-  bindings:
-  - port: 5004
-    containerPort: 5004
-    protocol: http
+# - name: sale-api
+#   dockerFile: sale-api/Dockerfile
+#   bindings:
+#   - port: 5004
+#     containerPort: 5004
+#     protocol: http

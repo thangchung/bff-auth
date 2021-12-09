@@ -1,4 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace Gateway.Services;
+
+public class DiscoveryDocument
+{
+    [JsonPropertyName("token_endpoint")] public string TokenEndpoint { get; set; } = "";
+}
 
 public class DiscoveryService
 {

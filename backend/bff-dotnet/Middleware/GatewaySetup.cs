@@ -16,6 +16,7 @@ public static class GatewaySetup
         builder.Services.AddSingleton(disco);
         builder.Services.AddSingleton(config);
         builder.Services.AddSingleton<TokenRefreshService>();
+        builder.Services.AddSingleton<TokenExchangeService>();
 
         var sessionTimeoutInMin = config.SessionTimeoutInMin;
         builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMin); });
@@ -53,7 +54,7 @@ public static class GatewaySetup
                 options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.RequireHttpsMetadata = false;
-
+                
                 var scopes = config.Scopes;
                 var scopeArray = scopes.Split(" ");
                 foreach (var scope in scopeArray)

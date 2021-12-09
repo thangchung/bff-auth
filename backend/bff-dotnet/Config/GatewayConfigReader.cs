@@ -13,7 +13,8 @@ public static class GatewayConfigReader
             ClientId = config.GetValue<string>("OpenIdConnect:ClientId"),
             ClientSecret = config.GetValue<string>("OpenIdConnect:ClientSecret"),
             Scopes = config.GetValue<string>("OpenIdConnect:Scopes", ""),
-            LogoutUrl = config.GetValue<string>("OpenIdConnect:LogoutUrl", "")
+            LogoutUrl = config.GetValue<string>("OpenIdConnect:LogoutUrl", ""),
+            DownStreamServices = config.GetSection("OpenIdConnect:DownStreamServices").Get<List<DownStreamServiceConfig>>()
         };
 
         return result;

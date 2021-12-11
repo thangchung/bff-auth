@@ -57,6 +57,10 @@ namespace IdentityServer
             builder.AddInMemoryIdentityResources(Config.IdentityResources);
             builder.AddInMemoryApiScopes(Config.ApiScopes);
             builder.AddInMemoryClients(Config.Clients);
+            builder.AddInMemoryApiResources(Config.ApiResources);
+
+            // RFC-8693
+            //builder.AddTokenExchange();
             
             // RFC-8693
             builder.AddExtensionGrantValidator<TokenExchangeExtensionGrantValidator>();

@@ -24,9 +24,18 @@ namespace IdentityServer
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-                //new ApiScope("api"),
-                new ApiScope("gw-api"),
-                new ApiScope("sale-api"),
+                new ApiScope("sale.all"),
+                new ApiScope("sale.read"),
+                new ApiScope("sale.write"),
+            };
+
+        public static IEnumerable<ApiResource> ApiResources =>
+            new List<ApiResource>
+            {
+                new ApiResource("sale-api", "Sale APIs")
+                {
+                    Scopes = { "sale.all", "sale.read", "sale.write" }
+                }
             };
 
         public static IEnumerable<Client> Clients =>
@@ -35,7 +44,7 @@ namespace IdentityServer
                 // BFF gateway
                 new Client
                 {
-                    ClientId = "bff-gw",
+                    ClientId = "gw-api",
                     ClientSecrets = { new Secret("secret".Sha256()) },
 
                     AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
@@ -47,18 +56,18 @@ namespace IdentityServer
                     PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "gw-api" }
+                    AllowedScopes = { "openid", "profile", "sale.all" }
                 },
                 new Client
                 {
-                    ClientId = "gw-api",
+                    ClientId = "sale-api",
                     ClientSecrets = new[] {new Secret("secret".Sha256())},
                     AllowedGrantTypes = new[] {"urn:ietf:params:oauth:grant-type:token-exchange"},
-                    AllowedScopes = new[] {"sale-api"}
+                    AllowedScopes = new[] { "sale.read", "sale.write" }
                 }
             };
     }
-    
+
     public class CustomTokenExchangeRequestValidator : ITokenExchangeRequestValidator
     {
         private readonly ISubjectTokenValidator _subjectTokenValidator;
@@ -79,17 +88,12 @@ namespace IdentityServer
             var audiences = result.Claims.Where(x => x.Type == "aud").ToList();
             var clientId = result.Claims.FirstOrDefault(x => x.Type == "client_id");
 
-            /*if (audiences.All(x => x.Value != request.ClientId) && clientId?.Value != request.ClientId)
+            if (audiences.All(x => x.Value != request.ClientId) && clientId?.Value != request.ClientId)
             {
                 return TokenExchangeValidationResult.Failure("Requester must be a recipient of the subject token");
-            }*/
-            
-            /*if(clientId?.Value != request.ClientId)
-            {
-                return TokenExchangeValidationResult.Failure("Requester must be a recipient of the subject token");
-            }*/
+            }
 
-            return result.IsValid 
+            return result.IsValid
                 ? TokenExchangeValidationResult.Success(result.Claims)
                 : TokenExchangeValidationResult.Failure("Invalid subject token");
         }

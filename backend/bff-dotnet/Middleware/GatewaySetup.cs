@@ -32,48 +32,48 @@ public static class GatewaySetup
         });
 
         builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie(setup =>
-            {
-                setup.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMin);
-                setup.SlidingExpiration = true;
-            })
-            .AddOpenIdConnect(options =>
-            {
-                options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.Authority = config.Authority;
-                options.ClientId = config.ClientId;
-                options.UsePkce = true;
-                options.ClientSecret = config.ClientSecret;
-                options.ResponseType = OpenIdConnectResponseType.Code;
-                options.SaveTokens = false;
-                options.GetClaimsFromUserInfoEndpoint = true;
-                options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.RequireHttpsMetadata = false;
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        })
+        .AddCookie(setup =>
+        {
+            setup.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMin);
+            setup.SlidingExpiration = true;
+        })
+        .AddOpenIdConnect(options =>
+        {
+            options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.Authority = config.Authority;
+            options.ClientId = config.ClientId;
+            options.UsePkce = true;
+            options.ClientSecret = config.ClientSecret;
+            options.ResponseType = OpenIdConnectResponseType.Code;
+            options.SaveTokens = false;
+            options.GetClaimsFromUserInfoEndpoint = true;
+            options.CorrelationCookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.NonceCookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.RequireHttpsMetadata = false;
                 
-                var scopes = config.Scopes;
-                var scopeArray = scopes.Split(" ");
-                foreach (var scope in scopeArray)
-                {
-                    options.Scope.Add(scope);
-                }
+            var scopes = config.Scopes;
+            var scopeArray = scopes.Split(" ");
+            foreach (var scope in scopeArray)
+            {
+                options.Scope.Add(scope);
+            }
 
-                options.Events.OnTokenValidated = (context) =>
-                {
-                    TokenHandler.HandleToken(context);
-                    return Task.FromResult(0);
-                };
+            options.Events.OnTokenValidated = (context) =>
+            {
+                TokenHandler.HandleToken(context);
+                return Task.FromResult(0);
+            };
 
-                options.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
-                {
-                    LogoutHandler.HandleLogout(context, config);
-                    return Task.CompletedTask;
-                };
-            });
+            options.Events.OnRedirectToIdentityProviderForSignOut = (context) =>
+            {
+                LogoutHandler.HandleLogout(context, config);
+                return Task.CompletedTask;
+            };
+        });
     }
 
     private static void UseYarp(this IEndpointRouteBuilder app)

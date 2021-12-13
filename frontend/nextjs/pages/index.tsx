@@ -19,7 +19,7 @@ const Home: NextPage = () => {
       const { data } = await axios.get<any>(`${remoteBffUrl}/userinfo`);
 
       if (data) {
-        setAuthenticated(data != null);
+        setAuthenticated(data.name != undefined);
         setUsername(data.name);
       }
     };

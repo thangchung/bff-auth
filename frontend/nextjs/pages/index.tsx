@@ -6,7 +6,6 @@ import axios from "lib/axios";
 import { v4 as uuidv4 } from 'uuid';
 
 const remoteBffUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
-const url = process.env.NEXT_PUBLIC_URL;
 
 const Home: NextPage = () => {
   const [authenticated, setAuthenticated] = useState(false);
@@ -17,10 +16,10 @@ const Home: NextPage = () => {
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const { data } = await axios.get<any>(`${url}/api/user-info`);
+      const { data } = await axios.get<any>(`${remoteBffUrl}/userinfo`);
 
       if (data) {
-        setAuthenticated(data.isLogin);
+        setAuthenticated(data != null);
         setUsername(data.name);
       }
     };
@@ -38,12 +37,12 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <p>
           {!authenticated && (
-            <a href={`${remoteBffUrl}/login?redirectUrl=${url}`}>Login</a>
+            <a href={`${remoteBffUrl}/login?redirectUrl=${remoteBffUrl}`}>Login</a>
           )}
           {authenticated && (
             <>
               <b>{username}</b>{" "}
-              <a href={`${remoteBffUrl}/logout?redirectUrl=${url}`}>Logout</a>
+              <a href={`${remoteBffUrl}/logout?redirectUrl=${remoteBffUrl}`}>Logout</a>
             </>
           )}
         </p>
@@ -56,14 +55,12 @@ const Home: NextPage = () => {
           <button
             onClick={async () => {
               try {
-                let { data } = await axios.get(`${url}/api/hello/${nameText}`, {
-                  withCredentials: true,
-                });
+                let { data } = await axios.get(`${remoteBffUrl}/api-gw/sale/${nameText}`);
 
-                setMessages(messages.concat(data.name));
+                setMessages(messages.concat(data));
               } catch (error: any) {
                 //console.log(error);
-                window.location.href = `${remoteBffUrl}/login?redirectUrl=${url}`;
+                window.location.href = `${remoteBffUrl}/login?redirectUrl=${remoteBffUrl}`;
               }
             }}
           >

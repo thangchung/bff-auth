@@ -18,7 +18,7 @@ export default async function handler(
 ) {
   const { name } = req.query
   try {
-    let user = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/sale/${name}`, {
+    let user = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api-gw/sale/${name}`, {
       headers: {
         cookie: normalizeCookie(req.cookies)
       }

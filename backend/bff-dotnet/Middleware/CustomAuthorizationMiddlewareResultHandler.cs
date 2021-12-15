@@ -25,12 +25,10 @@ public class CustomAuthorizationMiddlewareResultHandler : IAuthorizationMiddlewa
             return Task.CompletedTask;
         }
 
-        if (authorizeResult.Forbidden)
-        {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return Task.CompletedTask;
-        }
+        if (!authorizeResult.Forbidden) return _handler.HandleAsync(next, context, policy, authorizeResult);
+        context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
         
-        return _handler.HandleAsync(next, context, policy, authorizeResult);
+        return Task.CompletedTask;
+
     }
 }

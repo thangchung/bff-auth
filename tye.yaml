@@ -1,0 +1,31 @@
+name: bff-auth
+
+services:
+
+- name: redis
+  image: redis:6.2.5-alpine
+  bindings:
+    - port: 6379
+
+- name: gateway
+  project: backend/bff-dotnet/Gateway.csproj
+  env:
+    - Redis=redis # distributed session storage
+  bindings:
+  - port: 8080
+    protocol: https
+
+- name: identityserver
+  project: backend/identity-server/IdentityServer.csproj
+  bindings:
+  - port: 5001
+    protocol: https
+
+- name: sale-api
+  dockerFile: backend/sale-api/Dockerfile
+  env:
+    - AUTH_SERVER_KEY_URL=https://host.docker.internal:5001/.well-known/openid-configuration/jwks
+  bindings:
+  - port: 5004
+    containerPort: 5004
+    protocol: http

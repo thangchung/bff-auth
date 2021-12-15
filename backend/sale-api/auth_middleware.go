@@ -2,9 +2,11 @@ package main
 
 import (
 	"crypto/rsa"
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"log"
 	"math/big"
 	"net/http"
 	"os"
@@ -20,10 +22,19 @@ var (
 )
 
 func GetPublicKeys() {
+	log.Println("AUTH_SERVER_KEY_URL:", os.Getenv("AUTH_SERVER_KEY_URL"))
+
 	rsakeys = make(map[string]*rsa.PublicKey)
 	var body map[string]interface{}
 	uri := os.Getenv("AUTH_SERVER_KEY_URL")
-	resp, _ := http.Get(uri)
+
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	resp, err := http.Get(uri)
+
+	if err != nil {
+		log.Println("error:", err)
+	}
+
 	json.NewDecoder(resp.Body).Decode(&body)
 	for _, bodykey := range body["keys"].([]interface{}) {
 		key := bodykey.(map[string]interface{})
@@ -40,10 +51,6 @@ func Verify(c *fiber.Ctx) bool {
 	isValid := false
 	errorMessage := ""
 	tokenString := c.Get("Authorization")
-
-	// we can get using fasthttp lib
-	// v := c.Request().Header.Peek("Authorization")
-	// tokenString := string(v)
 
 	if strings.HasPrefix(tokenString, "Bearer ") {
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
@@ -72,10 +79,11 @@ func Verify(c *fiber.Ctx) bool {
 }
 
 func JwtBearer(c *fiber.Ctx) error {
-	GetPublicKeys()
-	if !Verify(c) {
-		return errors.New("invalid access")
+	if strings.Contains(c.Path(), "/api") {
+		GetPublicKeys()
+		if !Verify(c) {
+			return errors.New("invalid access")
+		}
 	}
-
 	return c.Next()
 }

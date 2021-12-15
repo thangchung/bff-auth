@@ -1,0 +1,49 @@
+basePath: /
+definitions:
+  main.HTTPError:
+    type: object
+host: localhost:5004
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a Sale APIs swagger
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Sale APIs
+  version: "1.0"
+paths:
+  /api/{name}:
+    get:
+      consumes:
+      - application/json
+      description: get hello
+      parameters:
+      - description: Name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/main.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/main.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/main.HTTPError'
+      summary: Say hello
+swagger: "2.0"

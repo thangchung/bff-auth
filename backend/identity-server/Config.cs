@@ -49,11 +49,11 @@ namespace IdentityServer
 
                     AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
 
-                    RedirectUris = { "https://localhost:5002/signin-oidc" },
+                    RedirectUris = { "https://localhost:8080/signin-oidc" },
 
-                    BackChannelLogoutUri = "https://localhost:5002/logout",
+                    BackChannelLogoutUri = "https://localhost:8080/logout",
 
-                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:8080/signout-callback-oidc" },
 
                     AllowOfflineAccess = true,
                     AllowedScopes = { "openid", "profile", "sale.all" }

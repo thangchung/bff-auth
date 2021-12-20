@@ -7,10 +7,23 @@ services:
   bindings:
     - port: 6379
 
+- name: opa
+  image: openpolicyagent/opa:0.35.0
+  args: "run --server --log-format=json-pretty --log-level=debug ./tmp/api_authz_token.rego"
+  volumes:
+    - target: /tmp/api_authz_token.rego
+      source: policy/api_authz_token.rego
+    - target: /tmp/policy.rego
+      source: policy/policy.rego
+  bindings:
+  - port: 8181
+    containerPort: 8181
+    protocol: http
+
 - name: gateway
   project: backend/bff-dotnet/Gateway.csproj
   env:
-    - Redis=redis # distributed session storage
+    - Redis=localhost # distributed session storage
   bindings:
   - port: 8080
     protocol: https

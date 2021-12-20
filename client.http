@@ -1,0 +1,33 @@
+@host = http://localhost:8181
+
+###
+GET {{host}}/v1/policies
+content-type: application/json
+
+###
+POST {{host}}/v1/data HTTP/1.1
+Content-Type: application/json
+
+{
+    "input": {
+        "request": {
+            "headers": {
+                "Authorization": "bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1OTk5MzY3MTIsImV4cCI6MTYzMTQ3MjcxMiwiYXVkIjoibXkuc2l0ZSIsInN1YiI6InRlc3QiLCJteS1jbGFpbSI6InRlc3QifQ.F_OJvAbkNAuZlFwP0IrqmJWAvQpt0nVKgGldu9sD2_M"
+            }
+        }
+    }
+}
+
+###
+@token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJPbmxpbmUgSldUIEJ1aWxkZXIiLCJpYXQiOjE1OTk5MzY3MTIsImV4cCI6MTYzMTQ3MjcxMiwiYXVkIjoibXkuc2l0ZSIsInN1YiI6InRlc3QiLCJteS1jbGFpbSI6InRlc3QifQ.F_OJvAbkNAuZlFwP0IrqmJWAvQpt0nVKgGldu9sD2_M'
+POST {{host}}/v1/data/httpapi/authz HTTP/1.1
+content-type: application/json
+
+{
+    "input": {
+        "path": ["finance", "salary", "alice"],
+        "user": "alice",
+        "method": "GET",
+        "authorization": "Bearer {{token}}"
+    }
+}

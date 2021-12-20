@@ -2,6 +2,15 @@
 
 TODO
 
+# When to use BFF Auth with Cookies-based
+- Used: 
+  - Cookies (Same site) and move the authentication to the trusted backend
+  - Use a dedicated backend for SPA now and move the security to the trusted backend
+  - Azure does not support introspection or the revocation endpoint so you cannot invalidate the tokens, or logout an Azure SPA fully. BBF removes this problem
+- Not used:
+  - High load apps or cross domain with high load
+  - In this case, please use tokens, but it has a risk of tokens to be robbed in the client-side
+
 # Get starting
 
 - Start frontend
@@ -19,22 +28,13 @@ TODO
 > tye run
 ```
 
-- Go to `https://localhost:5002`, and start to play with it
+- Go to `https://localhost:8080`, and start to play with it
 
 ![](assets/auth_flow.gif)
 
 # High level architecture
 
 ![](assets/overview.png)
-
-# When to use BFF Auth with Cookies-based
-- Used: 
-  - Cookies (Same site) and move the authentication to the trusted backend
-  - Use a dedicated backend for SPA now and move the security to the trusted backend
-  - Azure does not support introspection or the revocation endpoint so you cannot invalidate the tokens, or logout an Azure SPA fully. BBF removes this problem
-- Not used:
-  - High load apps or cross domain with high load
-  - In this case, please use tokens, but it has a risk of tokens to be robbed in the client-side
 
 # Hosts and Services
 

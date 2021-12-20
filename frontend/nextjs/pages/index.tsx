@@ -60,7 +60,7 @@ const Home: NextPage = () => {
                 setMessages(messages.concat(data));
               } catch (error: any) {
                 //console.log(error);
-                window.location.href = `${remoteBffUrl}/login?redirectUrl=${remoteBffUrl}`;
+                window.location.assign(`${remoteBffUrl}/login?redirectUrl=${remoteBffUrl}`);
               }
             }}
           >

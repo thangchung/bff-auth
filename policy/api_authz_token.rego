@@ -1,16 +1,17 @@
 package http
 
-default allow = true
+default allow = false
 
-allow = {
-	"allow": true,
-	"additional_headers": {"x-sub": my_claim},
-} {
-	my_claim := jwt.payload["sub"]
+allow {
+	some userid
+	input.method == "GET"
+  	input.path = ["api", userid]
+  	jwt.payload.sub == userid
+	jwt.payload.sub == "88421113"
 }
 
 jwt = { "payload": payload } {
-	auth_header := input.request.headers.Authorization
+	auth_header := input.token
 	[_, jwt] := split(auth_header, " ")
 	[_, payload, _] := io.jwt.decode(jwt)
 }

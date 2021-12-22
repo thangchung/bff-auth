@@ -38,6 +38,7 @@ services:
   dockerFile: backend/sale-api/Dockerfile
   env:
     - AUTH_SERVER_KEY_URL=https://host.docker.internal:5001/.well-known/openid-configuration/jwks
+    - OPA_API_SERVER_URL=http://host.docker.internal:8181/v1/data/http/allow
   bindings:
   - port: 5004
     containerPort: 5004

@@ -10,6 +10,7 @@ const remoteBffUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 const Home: NextPage = () => {
   const [authenticated, setAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
+  const [userid, setUserId] = useState("");
 
   const [nameText, setNameText] = useState("John Doe");
   const [messages, setMessages] = useState([]);
@@ -21,6 +22,7 @@ const Home: NextPage = () => {
       if (data) {
         setAuthenticated(data.name != undefined);
         setUsername(data.name);
+        setUserId(data.sub);
       }
     };
     fetchData();
@@ -55,7 +57,7 @@ const Home: NextPage = () => {
           <button
             onClick={async () => {
               try {
-                let { data } = await axios.get(`${remoteBffUrl}/api-gw/sale/${nameText}`);
+                let { data } = await axios.get(`${remoteBffUrl}/api-gw/sale/${userid}/${nameText}`);
 
                 setMessages(messages.concat(data));
               } catch (error: any) {

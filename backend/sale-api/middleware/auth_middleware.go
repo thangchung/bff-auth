@@ -1,4 +1,4 @@
-package main
+package middleware
 
 import (
 	"crypto/rsa"

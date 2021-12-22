@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 
 	_ "github.com/thangchung/bff-auth/backend/sale-api/docs"
+	localmiddleware "github.com/thangchung/bff-auth/backend/sale-api/middleware"
 )
 
 // @title Sale APIs
@@ -32,7 +33,8 @@ func main() {
 
 	app.Use(cors.New())
 	app.Use(logger.New())
-	app.Use(JwtBearer)
+	//app.Use(localmiddleware.JwtBearer)
+	app.Use(localmiddleware.PolicyEnforcer)
 
 	app.Get("/swagger/*", swagger.Handler) // default
 
@@ -40,7 +42,7 @@ func main() {
 		return c.Redirect("/swagger/")
 	})
 
-	app.Get("/api/:name", Hello)
+	app.Get("/api/:userid/:name", Hello)
 
 	log.Fatal(app.Listen(":5004"))
 }
@@ -57,7 +59,7 @@ func main() {
 // @Failure 500 {object} HTTPError
 // @Router       /api/{name} [get]
 func Hello(c *fiber.Ctx) error {
-	msg := fmt.Sprintf("Hello, %s 👋! from user_id %s", c.Params("name"), user_id)
+	msg := fmt.Sprintf("Hello, %s 👋! from user_id %s", c.Params("name"), c.Params("userid"))
 	return c.SendString(msg)
 }
 

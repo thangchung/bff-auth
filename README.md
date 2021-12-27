@@ -6,7 +6,7 @@ TODO
 - Used: 
   - Cookies (Same site) and move the authentication to the trusted backend
   - Use a dedicated backend for SPA now and move the security to the trusted backend
-  - Azure does not support introspection or the revocation endpoint so you cannot invalidate the tokens, or logout an Azure SPA fully. BBF removes this problem
+  - Azure does not support introspection or the revocation endpoint so you cannot invalidate the tokens, or logout an Azure SPA fully. BFF removes this problem
 - Not used:
   - High load apps or cross domain with high load
   - In this case, please use tokens, but it has a risk of tokens to be robbed in the client-side
@@ -42,59 +42,46 @@ TODO
   <tr>
     <td>No.</td>
     <td>Name</td>
+    <td>Technical Stacks</td>
     <td>URI</td>
   </tr>
   <tr>
     <td>1</td>
     <td>Gateway (BFF Auth)</td>
+    <td>.NET 6 (YARP)</td>
     <td>https://localhost:8080</td>
   </tr>
   <tr>
     <td>2</td>
     <td>Duende.IdentityServer</td>
+    <td>.NET 6</td>
     <td>https://localhost:5001</td>
   </tr>
   <tr>
     <td>3</td>
-    <td>Product API (TODO)</td>
+    <td>Product API</td>
+    <td>Rust (Axum, Tower, Hyper, Tokio)</td>
     <td>http://localhost:5003</td>
   </tr>
   <tr>
     <td>4</td>
     <td>Sale API</td>
+    <td>Golang (fiber)</td>
     <td>http://localhost:5004</td>
   </tr>
   <tr>
     <td>5</td>
     <td>Ship API (TODO)</td>
+    <td>.NET 6</td>
     <td>http://localhost:5005</td>
   </tr>
   <tr>
     <td>5</td>
-    <td>Web (Nextjs)</td>
+    <td>Web</td>
+    <td>Nextjs</td>
     <td>http://localhost:3000</td>
   </tr>
 </table>
-
-# Technical stacks
-
-## BFF Authentication
-- .NET 6
-
-## Identity Server
-- Duende.IdentityServer (.NET 6)
-
-## Front-end
-- Nextjs
-
-## Product Api
-- Rust (Axum): TODO
-
-## Sale Api
-- Golang (fiber)
-
-## Ship Api
-- .NET 6
 
 # References
 - RFC-8693: https://github.com/RockSolidKnowledge/TokenExchange

@@ -17,6 +17,18 @@ content-type: application/json
 }
 
 ###
+POST {{host}}/v1/data/http/product_api_allow HTTP/1.1
+content-type: application/json
+
+{
+    "input": {
+        "token": "Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjM5N0E4MEY2NTBBMUNFODhCMkVFOEM1ODk4M0MwQjBCIiwidHlwIjoiYXQrand0In0.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo1MDAxIiwibmJmIjoxNjQwMTQ5ODMwLCJpYXQiOjE2NDAxNDk4MzAsImV4cCI6MTY0MDE1MzQzMCwiYXVkIjpbInNhbGUtYXBpIiwiaHR0cHM6Ly9sb2NhbGhvc3Q6NTAwMS9yZXNvdXJjZXMiXSwic2NvcGUiOlsic2FsZS5yZWFkIl0sImFtciI6WyJ1cm46aWV0ZjpwYXJhbXM6b2F1dGg6Z3JhbnQtdHlwZTp0b2tlbi1leGNoYW5nZSIsInB3ZCJdLCJjbGllbnRfaWQiOiJndy1hcGkiLCJzdWIiOiI4ODQyMTExMyIsImF1dGhfdGltZSI6MTY0MDE0OTgzMCwiaWRwIjoibG9jYWwiLCJqdGkiOiJFQkZDNzY3M0E0RjczQkNERTgwQUJDM0VFOERCMEU1NSJ9.HM7wHI5YtAFcJ4b7mAJoUUOO4rPInpK8vL5dTe02szYdmtc6NsKW1CC_NXUpq7jypCtdyxeYJtJ_rYDaLqk107RGFDa6qTrNlVCVm_z2FP3DelYPdUSbniicbkQnJvY1sUnUIopAiVeBH5lPpvrzvb6oAKuO1sXhA1cZ_mLsbgKh_OH582WxwZa912LZy4WH5yK2Xbk0iJROluJHwyiqPDX_KL5umU32-XemrfX8eDeNd8MzGN5BS9LgYda58RMEN8WbJW-bXvC1LWj6lsXWqK2aq1ePdIOsgREx6BYFewYhwTIS83D43FCaFcA_bADebUt3FS9tMdZ2u5WTQl_zNQ",
+        "method": "GET",
+        "path": ["api", "products"]
+    }
+}
+
+###
 POST {{host}}/v1/data HTTP/1.1
 Content-Type: application/json
 

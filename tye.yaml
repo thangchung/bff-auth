@@ -16,23 +16,23 @@ services:
     - target: /tmp/policy.rego
       source: policy/policy.rego
   bindings:
-  - port: 8181
-    containerPort: 8181
-    protocol: http
+    - port: 8181
+      containerPort: 8181
+      protocol: http
 
 - name: gateway
   project: backend/bff-dotnet/Gateway.csproj
   env:
     - Redis=localhost # distributed session storage
   bindings:
-  - port: 8080
-    protocol: https
+    - port: 8080
+      protocol: https
 
 - name: identityserver
   project: backend/identity-server/IdentityServer.csproj
   bindings:
-  - port: 5001
-    protocol: https
+    - port: 5001
+      protocol: https
 
 - name: sale-api
   dockerFile: backend/sale-api/Dockerfile
@@ -40,6 +40,6 @@ services:
     - AUTH_SERVER_KEY_URL=https://host.docker.internal:5001/.well-known/openid-configuration/jwks
     - OPA_API_SERVER_URL=http://host.docker.internal:8181/v1/data/http/allow
   bindings:
-  - port: 5004
-    containerPort: 5004
-    protocol: http
+    - port: 5004
+      containerPort: 5004
+      protocol: http

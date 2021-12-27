@@ -10,6 +10,12 @@ allow {
 	jwt.payload.sub == "88421113"
 }
 
+product_api_allow {
+	input.method == "GET"
+  	input.path = ["api", "products"]
+	jwt.payload.sub == "88421113"
+}
+
 jwt = { "payload": payload } {
 	auth_header := input.token
 	[_, jwt] := split(auth_header, " ")
